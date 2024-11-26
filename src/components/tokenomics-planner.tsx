@@ -15,7 +15,6 @@ import {
   CartesianGrid,
 } from "recharts";
 import { Slider } from "./ui/slider";
-
 import { Input } from "./ui/input";
 import { Alert, AlertTitle, AlertDescription } from "./ui/alert";
 import { Info, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
@@ -367,9 +366,7 @@ const TokenomicsPlanner = () => {
                     {expandedCategory === category && (
                       <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-[#ffffff1a]">
                         <div>
-                          <label className="text-sm text-gray-300">
-                            TGE Unlock %
-                          </label>
+                          <label className="text-sm text-gray-300">TGE Unlock %</label>
                           <Input
                             type="number"
                             value={data.tge}
@@ -377,222 +374,220 @@ const TokenomicsPlanner = () => {
                               handleDistributionChange(
                                 category,
                                 "tge",
-
-
                                 Number(e.target.value)
-                                                              )
-                                                            }
-                                                            className="mt-1 bg-[#2a2333] border-[#ffffff1a] text-white"
-                                                            min="0"
-                                                            max="100"
-                                                            step="0.1"
-                                                          />
-                                                        </div>
-                                                        <div>
-                                                          <label className="text-sm text-gray-300">
-                                                            Vesting Duration (months)
-                                                          </label>
-                                                          <Input
-                                                            type="number"
-                                                            value={data.duration}
-                                                            onChange={(e) =>
-                                                              handleDistributionChange(
-                                                                category,
-                                                                "duration",
-                                                                Number(e.target.value)
-                                                              )
-                                                            }
-                                                            className="mt-1 bg-[#2a2333] border-[#ffffff1a] text-white"
-                                                            min="0"
-                                                          />
-                                                        </div>
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                ))}
-                                              </div>
+                              )
+                            }
+                            className="mt-1 bg-[#2a2333] border-[#ffffff1a] text-white"
+                            min="0"
+                            max="100"
+                            step="0.1"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-300">
+                            Vesting Duration (months)
+                          </label>
+                          <Input
+                            type="number"
+                            value={data.duration}
+                            onChange={(e) =>
+                              handleDistributionChange(
+                                category,
+                                "duration",
+                                Number(e.target.value)
+                              )
+                            }
+                            className="mt-1 bg-[#2a2333] border-[#ffffff1a] text-white"
+                            min="0"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
 
-                                              {metrics.warnings.length > 0 && (
-                                                <div className="space-y-2">
-                                                  {metrics.warnings.map((warning, idx) => (
-                                                    <Alert key={idx} variant="destructive" className="bg-red-900/50 border-red-700">
-                                                      <AlertTriangle className="h-4 w-4" />
-                                                      <AlertTitle className="text-white">Warning</AlertTitle>
-                                                      <AlertDescription className="text-gray-200">{warning}</AlertDescription>
-                                                    </Alert>
-                                                  ))}
-                                                </div>
-                                              )}
-                                            </div>
+              {metrics.warnings.length > 0 && (
+                <div className="space-y-2">
+                  {metrics.warnings.map((warning, idx) => (
+                    <Alert key={idx} variant="destructive" className="bg-red-900/50 border-red-700">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertTitle className="text-white">Warning</AlertTitle>
+                      <AlertDescription className="text-gray-200">{warning}</AlertDescription>
+                    </Alert>
+                  ))}
+                </div>
+              )}
+            </div>
 
-                                            {/* Right Column - Charts */}
-                                            <div className="space-y-8">
-                                              {isClient && (
-                                                <>
-                                                  <ChartContainer config={chartConfig}>
-                                                    <div>
-                                                      <h3 className="text-sm font-medium mb-4 text-white">Token Distribution</h3>
-                                                      <div className="flex flex-col items-center">
-                                                        <PieChart width={500} height={350}>
-                                                          <Pie
-                                                            data={Object.entries(distribution).map(([name, data]) => ({
-                                                              name: chartConfig[name as keyof typeof chartConfig].label,
-                                                              value: data.percentage,
-                                                            }))}
-                                                            cx={220}
-                                                            cy={175}
-                                                            innerRadius={80}
-                                                            outerRadius={140}
-                                                            paddingAngle={2}
-                                                            dataKey="value"
-                                                            label={false}
-                                                            labelLine={false}
-                                                          >
-                                                            {Object.entries(distribution).map((_, index) => (
-                                                              <Cell
-                                                                key={`cell-${index}`}
-                                                                fill={COLORS[index % COLORS.length]}
-                                                                className="opacity-90 hover:opacity-100 transition-opacity"
-                                                              />
-                                                            ))}
-                                                          </Pie>
-                                                          <Tooltip 
-                                                            content={({ payload }) => {
-                                                              if (payload && payload[0]) {
-                                                                return (
-                                                                  <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
-                                                                    <div className="text-[#14101b] font-medium">
-                                                                      {payload[0].name}: {payload[0].value.toFixed(1)}%
-                                                                    </div>
-                                                                  </div>
-                                                                );
-                                                              }
-                                                              return null;
-                                                            }}
-                                                          />
-                                                          <Legend
-                                                            layout="vertical"
-                                                            align="right"
-                                                            verticalAlign="middle"
-                                                            iconSize={8}
-                                                            wrapperStyle={{
-                                                              paddingLeft: "30px",
-                                                              fontSize: "11px",
-                                                              lineHeight: "20px",
-                                                              color: 'rgba(255, 255, 255, 0.8)'
-                                                            }}
-                                                            formatter={(value) => value}
-                                                          />
-                                                        </PieChart>
-                                                      </div>
-                                                    </div>
-
-                                                    <div>
-                                                      <h3 className="text-sm font-medium mb-4 text-white">Token Unlock Schedule</h3>
-                                                      <div className="text-sm text-gray-400 mb-4">
-                                                        Shows cumulative circulating supply percentage over time
-                                                      </div>
-                                                      <div className="flex flex-col items-center">
-                                                        <LineChart
-                                                          width={500}
-                                                          height={350}
-                                                          data={unlockSchedule}
-                                                          margin={{ top: 20, right: 40, left: 40, bottom: 40 }}
-                                                        >
-                                                          <CartesianGrid 
-                                                            strokeDasharray="3 3" 
-                                                            strokeOpacity={0.1}
-                                                            stroke="rgba(255, 255, 255, 0.2)"
-                                                          />
-                                                          <XAxis
-                                                            dataKey="month"
-                                                            label={{
-                                                              value: "Months after TGE",
-                                                              position: "bottom",
-                                                              offset: 20,
-                                                              style: {
-                                                                fontSize: 11,
-                                                                fill: 'rgba(255, 255, 255, 0.7)',
-                                                              }
-                                                            }}
-                                                            tick={{ fontSize: 11, fill: 'rgba(255, 255, 255, 0.7)' }}
-                                                            axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
-                                                            tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
-                                                          />
-                                                          <YAxis
-                                                            label={{
-                                                              value: "Circulating Supply %",
-                                                              angle: -90,
-                                                              position: "insideLeft",
-                                                              offset: 0,
-                                                              style: {
-                                                                fontSize: 11,
-                                                                fill: 'rgba(255, 255, 255, 0.7)',
-                                                                textAnchor: 'middle'
-                                                              }
-                                                            }}
-                                                            domain={[0, 100]}
-                                                            ticks={[0, 20, 40, 60, 80, 100]}
-                                                            tickFormatter={(value) => `${value}%`}
-                                                            tick={{ fontSize: 11, fill: 'rgba(255, 255, 255, 0.7)' }}
-                                                            axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
-                                                            tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
-                                                          />
-                                                          <Tooltip
-                                                            content={({ payload, label }) => {
-                                                              if (payload && payload[0]) {
-                                                                return (
-                                                                  <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
-                                                                    <div className="text-[#14101b] font-medium">
-                                                                      Month {label}: {payload[0].value.toFixed(2)}%
-                                                                    </div>
-                                                                  </div>
-                                                                );
-                                                              }
-                                                              return null;
-                                                            }}
-                                                          />
-                                                          <Line
-                                                            type="monotone"
-                                                            dataKey="percentCirculating"
-                                                            stroke="white"
-                                                            strokeWidth={2}
-                                                            dot={false}
-                                                            activeDot={{ r: 6, fill: 'white' }}
-                                                          />
-                                                        </LineChart>
-
-                                                        <div className="text-xs text-gray-400 mt-6 w-full px-4">
-                                                          <div className="font-medium mb-2">Key Points:</div>
-                                                          <ul className="list-disc ml-4 space-y-1">
-                                                            <li>
-                                                              TGE Release: {metrics.tgeCirculatingPercent.toFixed(1)}%
-                                                            </li>
-                                                            <li>
-                                                              Initial Market Cap: $
-                                                              {metrics.initialMarketCap.toLocaleString(undefined, {
-                                                                maximumFractionDigits: 0,
-                                                              })}
-                                                            </li>
-                                                            <li>
-                                                              Final FDV: $
-                                                              {fdv.toLocaleString(undefined, {
-                                                                maximumFractionDigits: 0,
-                                                              })}
-                                                            </li>
-                                                          </ul>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  </ChartContainer>
-                                                </>
-                                              )}
-                                            </div>
-                                          </div>
-                                        </CardContent>
-                                      </Card>
+            {/* Right Column - Charts */}
+            <div className="space-y-8">
+              {isClient && (
+                <>
+                  <ChartContainer config={chartConfig}>
+                    <div>
+                      <h3 className="text-sm font-medium mb-4 text-white">Token Distribution</h3>
+                      <div className="flex flex-col items-center">
+                        <PieChart width={500} height={350}>
+                          <Pie
+                            data={Object.entries(distribution).map(([name, data]) => ({
+                              name: chartConfig[name as keyof typeof chartConfig].label,
+                              value: data.percentage,
+                            }))}
+                            cx={220}
+                            cy={175}
+                            innerRadius={80}
+                            outerRadius={140}
+                            paddingAngle={2}
+                            dataKey="value"
+                            label={false}
+                            labelLine={false}
+                          >
+                            {Object.entries(distribution).map((_, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                                className="opacity-90 hover:opacity-100 transition-opacity"
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            content={({ payload }) => {
+                              if (payload?.[0]) {
+                                return (
+                                  <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
+                                    <div className="text-[#14101b] font-medium">
+                                      {`${payload[0].name}: ${payload[0].value.toFixed(1)}%`}
                                     </div>
-                                  );
-                                };
+                                  </div>
+                                );
+                              }
+                              return null;
+                            }}
+                          />
+                          <Legend
+                            layout="vertical"
+                            align="right"
+                            verticalAlign="middle"
+                            iconSize={8}
+                            wrapperStyle={{
+                              paddingLeft: "30px",
+                              fontSize: "11px",
+                              lineHeight: "20px",
+                              color: 'rgba(255, 255, 255, 0.8)'
+                            }}
+                            formatter={(value) => value}
+                          />
+                        </PieChart>
+                      </div>
+                    </div>
 
-                                export default TokenomicsPlanner;
+                    <div>
+                      <h3 className="text-sm font-medium mb-4 text-white">Token Unlock Schedule</h3>
+                      <div className="text-sm text-gray-400 mb-4">
+                        Shows cumulative circulating supply percentage over time
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <LineChart
+                          width={500}
+                          height={350}
+                          data={unlockSchedule}
+                          margin={{ top: 20, right: 40, left: 40, bottom: 40 }}
+                        >
+                          <CartesianGrid 
+                            strokeDasharray="3 3" 
+                            strokeOpacity={0.1}
+                            stroke="rgba(255, 255, 255, 0.2)"
+                          />
+                          <XAxis
+                            dataKey="month"
+                            label={{
+                              value: "Months after TGE",
+                              position: "bottom",
+                              offset: 20,
+                              style: {
+                                fontSize: 11,
+                                fill: 'rgba(255, 255, 255, 0.7)',
+                              }
+                            }}
+                            tick={{ fontSize: 11, fill: 'rgba(255, 255, 255, 0.7)' }}
+                            axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                            tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                          />
+                          <YAxis
+                            label={{
+                              value: "Circulating Supply %",
+                              angle: -90,
+                              position: "insideLeft",
+                              offset: 0,
+                              style: {
+                                fontSize: 11,
+                                fill: 'rgba(255, 255, 255, 0.7)',
+                                textAnchor: 'middle'
+                              }
+                            }}
+                            domain={[0, 100]}
+                            ticks={[0, 20, 40, 60, 80, 100]}
+                            tickFormatter={(value) => `${value}%`}
+                            tick={{ fontSize: 11, fill: 'rgba(255, 255, 255, 0.7)' }}
+                            axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                            tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                          />
+                          <Tooltip
+                            content={({ payload, label }) => {
+                              if (payload?.[0]) {
+                                return (
+                                  <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
+                                    <div className="text-[#14101b] font-medium">
+                                      {`Month ${label}: ${payload[0].value.toFixed(2)}%`}
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            }}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="percentCirculating"
+                            stroke="white"
+                            strokeWidth={2}
+                            dot={false}
+                            activeDot={{ r: 6, fill: 'white' }}
+                          />
+                        </LineChart>
+
+                        <div className="text-xs text-gray-400 mt-6 w-full px-4">
+                          <div className="font-medium mb-2">Key Points:</div>
+                          <ul className="list-disc ml-4 space-y-1">
+                            <li>
+                              TGE Release: {metrics.tgeCirculatingPercent.toFixed(1)}%
+                            </li>
+                            <li>
+                              Initial Market Cap: $
+                              {metrics.initialMarketCap.toLocaleString(undefined, {
+                                maximumFractionDigits: 0,
+                              })}
+                            </li>
+                            <li>
+                              Final FDV: $
+                              {fdv.toLocaleString(undefined, {
+                                maximumFractionDigits: 0,
+                              })}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </ChartContainer>
+                </>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default TokenomicsPlanner;
