@@ -452,19 +452,20 @@ const TokenomicsPlanner = () => {
                             ))}
                           </Pie>
                           <Tooltip 
-                            content={({ payload }) => {
-                              if (payload?.[0]) {
-                                return (
-                                  <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
-                                    <div className="text-[#14101b] font-medium">
-                                      {`${payload[0].name}: ${payload[0].value.toFixed(1)}%`}
-                                    </div>
-                                  </div>
-                                );
-                              }
-                              return null;
-                            }}
-                          />
+  content={({ payload }) => {
+    // Add type guard to ensure payload exists and has the correct shape
+    if (!payload || !Array.isArray(payload) || !payload[0]?.name || !payload[0]?.value) {
+      return null;
+    }
+    return (
+      <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
+        <div className="text-[#14101b] font-medium">
+          {`${payload[0].name}: ${Number(payload[0].value).toFixed(1)}%`}
+        </div>
+      </div>
+    );
+  }}
+/>
                           <Legend
                             layout="vertical"
                             align="right"
