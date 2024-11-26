@@ -24,7 +24,7 @@ import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-} from "@/components/ui/chart";
+} from "./ui/chart";
 
 interface DistributionData {
   percentage: number;
