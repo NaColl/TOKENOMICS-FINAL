@@ -1,26 +1,28 @@
-import { ChartTooltipProps } from "recharts/types/component/Tooltip"
+import { ChartTooltipProps } from "recharts/types/component/Tooltip";
 
 export interface ChartConfig {
   [key: string]: {
-    label: string
-    color?: string
+    label: string;
+    color?: string;
   }
+}
+
+export interface ChartContainerProps {
+  children: React.ReactNode;
+  config: ChartConfig;
+  className?: string;
 }
 
 export function ChartContainer({
   children,
   config,
   className,
-}: {
-  children: React.ReactNode
-  config: ChartConfig
-  className?: string
-}) {
+}: ChartContainerProps) {
   return (
     <div className={className}>
       {children}
     </div>
-  )
+  );
 }
 
 export function ChartTooltip({
@@ -31,5 +33,5 @@ export function ChartTooltip({
     <div className="rounded-lg border bg-white p-2 shadow-sm">
       {children}
     </div>
-  )
+  );
 }
