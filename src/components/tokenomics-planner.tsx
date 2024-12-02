@@ -35,6 +35,18 @@ interface Distribution {
   [key: string]: DistributionData;
 }
 
+interface UnlockScheduleTooltipPayload {
+  value: number;
+  payload: {
+    percentCirculating: number;
+  };
+}
+
+interface PieChartTooltipPayload {
+  name: string;
+  value: number;
+}
+
 const COLORS = [
   "#FF6B6B",
   "#4ECDC4",
@@ -365,23 +377,43 @@ const TokenomicsPlanner = () => {
 
                     {expandedCategory === category && (
                       <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-[#ffffff1a]">
-                        <div>
-                          <label className="text-sm text-gray-300">TGE Unlock %</label>
-                          <Input
-                            type="number"
-                            value={data.tge}
-                            onChange={(e) =>
-                              handleDistributionChange(
-                                category,
-                                "tge",
-                                Number(e.target.value)
-                              )
-                            }
-                            className="mt-1 bg-[#2a2333] border-[#ffffff1a] text-white"
-                            min="0"
-                            max="100"
-                            step="0.1"
-                          />
+  <div>
+    <label className="text-sm text-gray-300">TGE Unlock %</label>
+    <Input
+      type="number"
+      value={data.tge}
+      onChange={(e) =>
+        handleDistributionChange(
+          category,
+          "tge",
+          Number(e.target.value)
+        )
+      }
+      className="mt-1 bg-[#2a2333] border-[#ffffff1a] text-white"
+      min="0"
+      max="100"
+      step="0.1"
+    />
+  </div>
+  <div>
+    <label className="text-sm text-gray-300">
+      Vesting Duration (months)
+    </label>
+    <Input
+      type="number"
+      value={data.duration}
+      onChange={(e) =>
+        handleDistributionChange(
+          category,
+          "duration",
+          Number(e.target.value)
+        )
+      }
+      className="mt-1 bg-[#2a2333] border-[#ffffff1a] text-white"
+      min="0"
+    />
+  </div>
+</div>
                         </div>
                         <div>
                           <label className="text-sm text-gray-300">
@@ -452,20 +484,19 @@ const TokenomicsPlanner = () => {
                             ))}
                           </Pie>
                           <Tooltip 
-  content={({ payload }) => {
-    // Add type guard to ensure payload exists and has the correct shape
-    if (!payload || !Array.isArray(payload) || !payload[0]?.name || !payload[0]?.value) {
-      return null;
-    }
-    return (
-      <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
-        <div className="text-[#14101b] font-medium">
-          {`${payload[0].name}: ${Number(payload[0].value).toFixed(1)}%`}
-        </div>
-      </div>
-    );
-  }}
-/>
+                            content={({ payload }: { payload?: PieChartTooltipPayload[] }) => {
+                              if (!payload || !payload[0]) {
+                                return null;
+                              }
+                              return (
+                                <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
+                                  <div className="text-[#14101b] font-medium">
+                                    {`${payload[0].name}: ${payload[0].value.toFixed(1)}%`}
+                                  </div>
+                                </div>
+                              );
+                            }}
+                          />
                           <Legend
                             layout="vertical"
                             align="right"
@@ -477,7 +508,7 @@ const TokenomicsPlanner = () => {
                               lineHeight: "20px",
                               color: 'rgba(255, 255, 255, 0.8)'
                             }}
-                            formatter={(value) => value}
+                            formatter={(value: string) => value}
                           />
                         </PieChart>
                       </div>
@@ -535,17 +566,20 @@ const TokenomicsPlanner = () => {
                             tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
                           />
                           <Tooltip
-                            content={({ payload, label }) => {
-                              if (payload?.[0]) {
-                                return (
-                                  <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
-                                    <div className="text-[#14101b] font-medium">
-                                      {`Month ${label}: ${payload[0].value.toFixed(2)}%`}
-                                    </div>
-                                  </div>
-                                );
+                            content={({ payload, label }: { 
+                              payload?: UnlockScheduleTooltipPayload[], 
+                              label?: string 
+                            }) => {
+                              if (!payload || !payload[0]) {
+                                return null;
                               }
-                              return null;
+                              return (
+                                <div className="bg-white rounded-lg p-2 shadow-lg border border-gray-100">
+                                  <div className="text-[#14101b] font-medium">
+                                    {`Month ${label}: ${payload[0].value.toFixed(2)}%`}
+                                  </div>
+                                </div>
+                              );
                             }}
                           />
                           <Line
